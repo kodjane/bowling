@@ -58,7 +58,7 @@ class BowlingGameServiceTest {
         Frame result = bowlingGameService.rollsBall(0, player1, frame, FIRST_ATTEMPT);
 
         // Then
-        assertThat(result.getScoreAt(FIRST_ATTEMPT))
+        assertThat(result.getScoreAt(FIRST_ATTEMPT).getValue())
                 .isEqualTo(0);
         assertThat(result.getPins())
                 .isEqualTo(15);
@@ -75,7 +75,7 @@ class BowlingGameServiceTest {
         Frame result = bowlingGameService.rollsBall(1, player1, frame, THIRD_ATTEMPT);
 
         // Then
-        assertThat(result.getScoreAt(THIRD_ATTEMPT))
+        assertThat(result.getScoreAt(THIRD_ATTEMPT).getValue())
                 .isEqualTo(1);
     }
 }
