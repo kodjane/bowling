@@ -1,9 +1,8 @@
 package com.kad.bowling.domain.service;
 
-import com.kad.bowling.domain.NormalFrame;
+import com.kad.bowling.domain.Frame;
 import com.kad.bowling.domain.Player;
-import com.kad.bowling.domain.enums.Attempt;
-import com.kad.bowling.domain.exception.RollingBallException;
+import com.kad.bowling.domain.exception.BowlingGameException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,7 @@ public class BowlingGameService {
         List<Player> addedPlayers = Arrays.asList(players);
 
         if (hasMinimumTwoPlayers(addedPlayers))
-            throw new RollingBallException("A bowling game should have at least 2 players before starting");
+            throw new BowlingGameException("A bowling game should have at least 2 players before starting");
 
         this.players = addedPlayers;
     }
@@ -35,9 +34,9 @@ public class BowlingGameService {
      * @param attempt  the specific attempt inside the frame
      * @return The frameId
      */
-    public NormalFrame rollsBall(int pinsDown, Player player, NormalFrame frame, Attempt attempt) {
+    public Frame rollsBall(int pinsDown, Player player, Frame frame, int attempt) {
         // TODO in progress
-        updateFrame(pinsDown, attempt, frame);
+        updateFrame(pinsDown, player, frame, attempt);
 
         return frame;
     }
@@ -46,8 +45,8 @@ public class BowlingGameService {
         return players.size() < MINIMUM_PLAYER_PER_GAME;
     }
 
-    private void updateFrame(int pinsDown, Attempt attempt, NormalFrame frame) {
-        frame.knockPinsAndUpdateScoreAt(pinsDown, attempt);
+    private void updateFrame(int pinsDown, Player player, Frame frame, int attempt) {
+        frame.knockPinsAndUpdateScoreAt(pinsDown, player, attempt);
     }
 
     public List<Player> getPlayers() {

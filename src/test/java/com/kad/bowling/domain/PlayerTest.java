@@ -28,6 +28,17 @@ class PlayerTest {
                 .hasSize(INITIAL_FRAME_PER_GAME);
     }
 
+    @Test
+    void can_add_an_extra_attempt_to_the_last_frame() {
+        Player aPlayer = new Player();
+        int lastFrameIndex = aPlayer.getFrames().size() - 1;
+        Frame lastFrame = aPlayer.getFrames().get(lastFrameIndex);
+
+        aPlayer.addAnExtraAttemptToTheLastFrame();
+
+        assertThat(lastFrame.getScoreBoard()).hasSize(4);
+    }
+
     private Player createPlayer() {
         return new Player();
     }

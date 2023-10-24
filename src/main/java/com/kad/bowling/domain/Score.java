@@ -2,6 +2,8 @@ package com.kad.bowling.domain;
 
 import com.kad.bowling.domain.enums.ScoreType;
 
+import java.util.Objects;
+
 /*
  * Created By
  * @author Aime D. Kodjane
@@ -25,5 +27,18 @@ public class Score {
 
     public ScoreType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Score score = (Score) o;
+        return value == score.value && type == score.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, type);
     }
 }
