@@ -10,13 +10,13 @@ import static com.kad.bowling.domain.enums.Attempt.*;
  * Created By
  * @author Aime D. Kodjane
  */
-public class Frame {
+public class NormalFrame {
     private final int INITIAL_SCORE = 0;
     private final int INITIAL_PINS_PER_GAME = 15;
     private final HashMap<Attempt, Score> scoreBoard;
     private int remainingPins;
 
-    public Frame() {
+    public NormalFrame() {
         remainingPins = INITIAL_PINS_PER_GAME;
         this.scoreBoard = initializeBoard();
     }
@@ -57,8 +57,10 @@ public class Frame {
         this.remainingPins = remainingPins - pinsDown;
         int scoreValue = 0;
 
-        if (isNeitherAStrikeNorASpare())
+        if (isNeitherAStrikeNorASpare()) {
             scoreValue = pinsDown;
+            this.scoreBoard.put(attempt, new Score(scoreValue));
+        }
 
         if (isStrike(attempt)){
             // TODO implement score calculation for a strike
@@ -70,7 +72,6 @@ public class Frame {
             System.out.println("DO some staff");
         }
 
-        this.scoreBoard.put(attempt, new Score(scoreValue));
     }
 
     /**

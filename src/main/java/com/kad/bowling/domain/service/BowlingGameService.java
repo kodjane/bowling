@@ -1,6 +1,6 @@
 package com.kad.bowling.domain.service;
 
-import com.kad.bowling.domain.Frame;
+import com.kad.bowling.domain.NormalFrame;
 import com.kad.bowling.domain.Player;
 import com.kad.bowling.domain.enums.Attempt;
 import com.kad.bowling.domain.exception.RollingBallException;
@@ -35,7 +35,7 @@ public class BowlingGameService {
      * @param attempt  the specific attempt inside the frame
      * @return The frameId
      */
-    public Frame rollsBall(int pinsDown, Player player, Frame frame, Attempt attempt) {
+    public NormalFrame rollsBall(int pinsDown, Player player, NormalFrame frame, Attempt attempt) {
         // TODO in progress
         updateFrame(pinsDown, attempt, frame);
 
@@ -46,7 +46,7 @@ public class BowlingGameService {
         return players.size() < MINIMUM_PLAYER_PER_GAME;
     }
 
-    private void updateFrame(int pinsDown, Attempt attempt, Frame frame) {
+    private void updateFrame(int pinsDown, Attempt attempt, NormalFrame frame) {
         frame.knockPinsAndUpdateScoreAt(pinsDown, attempt);
     }
 

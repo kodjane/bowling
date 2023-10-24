@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Aime D. Kodjane
  */
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class FrameTest {
-    private Frame aFrame;
+class NormalFrameTest {
+    private NormalFrame aFrame;
 
     @BeforeEach
     void setUp() {
@@ -111,7 +111,7 @@ class FrameTest {
         aFrame.knockPinsAndUpdateScoreAt(4, THIRD_ATTEMPT);
     }
 
-    private Frame createFrame() {
-        return new Frame();
+    private NormalFrame createFrame() {
+        return new NormalFrame();
     }
 }

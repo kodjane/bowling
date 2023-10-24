@@ -10,7 +10,7 @@ public enum Attempt {
     FIRST_ATTEMPT(1),
     SECOND_ATTEMPT(2),
     THIRD_ATTEMPT(3),
-    FOURTH_ATTEMPT(4);
+    EXTRA_ATTEMPT(4);
     private final int ID;
 
     Attempt(int ID) {

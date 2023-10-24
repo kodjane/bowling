@@ -1,19 +1,16 @@
 package com.kad.bowling.domain.service;
 
-import com.kad.bowling.domain.Frame;
-import com.kad.bowling.domain.enums.Attempt;
-import com.kad.bowling.domain.exception.RollingBallException;
+import com.kad.bowling.domain.NormalFrame;
 import com.kad.bowling.domain.Player;
+import com.kad.bowling.domain.exception.RollingBallException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.kad.bowling.domain.enums.Attempt.*;
+import static com.kad.bowling.domain.enums.Attempt.FIRST_ATTEMPT;
+import static com.kad.bowling.domain.enums.Attempt.THIRD_ATTEMPT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -52,10 +49,10 @@ class BowlingGameServiceTest {
         // Given
         Player player1 = new Player();
         BowlingGameService bowlingGameService = new BowlingGameService(player1, new Player());
-        Frame frame = player1.getFrames().get(0);
+        NormalFrame frame = player1.getFrames().get(0);
 
         // When
-        Frame result = bowlingGameService.rollsBall(0, player1, frame, FIRST_ATTEMPT);
+        NormalFrame result = bowlingGameService.rollsBall(0, player1, frame, FIRST_ATTEMPT);
 
         // Then
         assertThat(result.getScoreAt(FIRST_ATTEMPT).getValue())
@@ -69,10 +66,10 @@ class BowlingGameServiceTest {
         // Given
         Player player1 = new Player();
         BowlingGameService bowlingGameService = new BowlingGameService(player1, new Player());
-        Frame frame = player1.getFrames().get(0);
+        NormalFrame frame = player1.getFrames().get(0);
 
         // When
-        Frame result = bowlingGameService.rollsBall(1, player1, frame, THIRD_ATTEMPT);
+        NormalFrame result = bowlingGameService.rollsBall(1, player1, frame, THIRD_ATTEMPT);
 
         // Then
         assertThat(result.getScoreAt(THIRD_ATTEMPT).getValue())
