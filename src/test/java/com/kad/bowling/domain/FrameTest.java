@@ -45,10 +45,10 @@ class FrameTest {
         fillFrameScoreBoard();
 
         // When
-        int result = aFrame.getScoreAt(FIRST_ATTEMPT);
+        Score result = aFrame.getScoreAt(FIRST_ATTEMPT);
 
         // Then
-        assertThat(result)
+        assertThat(result.getValue())
                 .isEqualTo(3);
     }
 

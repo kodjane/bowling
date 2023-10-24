@@ -13,7 +13,7 @@ import static com.kad.bowling.domain.enums.Attempt.*;
 public class Frame {
     private final int INITIAL_SCORE = 0;
     private final int INITIAL_PINS_PER_GAME = 15;
-    private final HashMap<Attempt, Integer> scoreBoard;
+    private final HashMap<Attempt, Score> scoreBoard;
     private int remainingPins;
 
     public Frame() {
@@ -25,17 +25,17 @@ public class Frame {
      * This method allows to initialize the score board
      * @return The score board
      */
-    private HashMap<Attempt, Integer> initializeBoard() {
-        HashMap<Attempt, Integer> scoreBoard = new HashMap<>();
+    private HashMap<Attempt, Score> initializeBoard() {
+        HashMap<Attempt, Score> scoreBoard = new HashMap<>();
 
         for (Attempt attempt : Attempt.getInitialValues()) {
-            scoreBoard.put(attempt, INITIAL_SCORE);
+            scoreBoard.put(attempt, new Score(INITIAL_SCORE));
         }
 
         return scoreBoard;
     }
 
-    public HashMap<Attempt, Integer> getScoreBoard() {
+    public HashMap<Attempt, Score> getScoreBoard() {
         return this.scoreBoard;
     }
 
@@ -48,17 +48,17 @@ public class Frame {
      * @param attempt The specific attempt
      * @return The score
      */
-    public int getScoreAt(Attempt attempt) {
+    public Score getScoreAt(Attempt attempt) {
         return this.scoreBoard.get(attempt);
     }
 
     public void knockPinsAndUpdateScoreAt(int pinsDown, Attempt attempt) {
         //TODO requires more logics, but let's keep like that for now
         this.remainingPins = remainingPins - pinsDown;
-        int score = 0;
+        int scoreValue = 0;
 
         if (isNeitherAStrikeNorASpare())
-            score = pinsDown;
+            scoreValue = pinsDown;
 
         if (isStrike(attempt)){
             // TODO implement score calculation for a strike
@@ -70,7 +70,7 @@ public class Frame {
             System.out.println("DO some staff");
         }
 
-        this.scoreBoard.put(attempt, score);
+        this.scoreBoard.put(attempt, new Score(scoreValue));
     }
 
     /**
@@ -79,7 +79,7 @@ public class Frame {
      */
     public int getTotalScore() {
         return this.scoreBoard.values().stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(Score::getValue)
                 .sum();
     }
 
