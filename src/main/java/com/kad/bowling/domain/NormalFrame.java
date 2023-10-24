@@ -10,22 +10,16 @@ import static com.kad.bowling.domain.enums.Attempt.*;
  * Created By
  * @author Aime D. Kodjane
  */
-public class NormalFrame {
-    private final int INITIAL_SCORE = 0;
-    private final int INITIAL_PINS_PER_GAME = 15;
-    private final HashMap<Attempt, Score> scoreBoard;
+public class NormalFrame implements Frame{
     private int remainingPins;
-
+    private final HashMap<Attempt, Score> scoreBoard;
     public NormalFrame() {
         remainingPins = INITIAL_PINS_PER_GAME;
-        this.scoreBoard = initializeBoard();
+        scoreBoard = initializeBoard();
     }
 
-    /**
-     * This method allows to initialize the score board
-     * @return The score board
-     */
-    private HashMap<Attempt, Score> initializeBoard() {
+    @Override
+    public HashMap<Attempt, Score> initializeBoard() {
         HashMap<Attempt, Score> scoreBoard = new HashMap<>();
 
         for (Attempt attempt : Attempt.getInitialValues()) {
@@ -35,10 +29,12 @@ public class NormalFrame {
         return scoreBoard;
     }
 
+    @Override
     public HashMap<Attempt, Score> getScoreBoard() {
         return this.scoreBoard;
     }
 
+    @Override
     public int getPins() {
         return this.remainingPins;
     }
@@ -52,6 +48,7 @@ public class NormalFrame {
         return this.scoreBoard.get(attempt);
     }
 
+    @Override
     public void knockPinsAndUpdateScoreAt(int pinsDown, Attempt attempt) {
         //TODO requires more logics, but let's keep like that for now
         this.remainingPins = remainingPins - pinsDown;
@@ -78,22 +75,26 @@ public class NormalFrame {
      * This methods allows to get the total score of a frame
      * @return The total score
      */
+    @Override
     public int getTotalScore() {
         return this.scoreBoard.values().stream()
                 .mapToInt(Score::getValue)
                 .sum();
     }
 
-    private boolean isNeitherAStrikeNorASpare() {
+    @Override
+    public boolean isNeitherAStrikeNorASpare() {
         // TODO Should be public and tested in isolation
         // TODO We should also do the same for spare and strike cases
         return this.remainingPins > 0;
     }
 
+    @Override
     public boolean isStrike(Attempt attempt) {
         return attempt == FIRST_ATTEMPT && this.remainingPins == 0;
     }
 
+    @Override
     public boolean isSpare(Attempt attempt) {
         return isSecondOrThirdAttempt(attempt) && remainingPins == 0;
     }
@@ -102,4 +103,5 @@ public class NormalFrame {
         // TODO put some precision about where does the spare happened
         return attempt == SECOND_ATTEMPT || attempt == THIRD_ATTEMPT;
     }
+
 }
