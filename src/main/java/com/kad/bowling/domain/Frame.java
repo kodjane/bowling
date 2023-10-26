@@ -2,6 +2,7 @@ package com.kad.bowling.domain;
 
 import com.kad.bowling.domain.enums.AttemptName;
 import com.kad.bowling.domain.enums.FrameName;
+import com.kad.bowling.domain.enums.ScoreType;
 
 import java.util.HashMap;
 
@@ -68,11 +69,14 @@ public class Frame {
     }
 
     public boolean isStrike(Attempt attempt) {
-        return attempt.id() == 1 && this.remainingPins == 0;
+        return attempt.id() == 1
+                && this.remainingPins == 0
+                && this.getScoreAt(attempt).getValue() == ScoreType.STRIKE.getValue();
     }
 
     public boolean isSpare(Attempt attempt) {
-        return isSecondOrThirdAttempt(attempt) && remainingPins == 0;
+        return isSecondOrThirdAttempt(attempt)
+                && remainingPins == 0;
     }
 
     private boolean isSecondOrThirdAttempt(Attempt attempt) {
