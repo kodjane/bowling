@@ -1,11 +1,15 @@
 package com.kad.bowling.domain.service;
 
+import com.kad.bowling.domain.Attempt;
 import com.kad.bowling.domain.Frame;
 import com.kad.bowling.domain.Player;
 import com.kad.bowling.domain.exception.BowlingGameException;
+import com.kad.bowling.domain.exception.RollingBallException;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.kad.bowling.domain.Frame.INITIAL_PINS_PER_GAME;
 
 /*
  * Created By
@@ -34,19 +38,27 @@ public class BowlingGameService {
      * @param attempt  the specific attempt inside the frame
      * @return The frameId
      */
-    public Frame rollsBall(int pinsDown, Player player, Frame frame, int attempt) {
+    public Frame rollsBall(int pinsDown, Player player, Frame frame, Attempt attempt) {
+
+        if (pinsDown < 0 || pinsDown > INITIAL_PINS_PER_GAME )
+            throw new RollingBallException("The number of pins should be between 0 and 15");
         // TODO in progress
         updateFrame(pinsDown, player, frame, attempt);
 
         return frame;
     }
 
+    /**
+     * This methods allows to verify that the game has the minimum amount of players before starting
+     * @param players The list of the players that participate to the game
+     * @return true is the condition is satisfied
+     */
     private boolean hasMinimumTwoPlayers(List<Player> players) {
         return players.size() < MINIMUM_PLAYER_PER_GAME;
     }
 
-    private void updateFrame(int pinsDown, Player player, Frame frame, int attempt) {
-        frame.knockPinsAndUpdateScoreAt(pinsDown, player, attempt);
+    private void updateFrame(int pinsDown, Player player, Frame frame, Attempt attempt) {
+        player.knockPinsAndUpdateScoreAt(pinsDown, frame, attempt);
     }
 
     public List<Player> getPlayers() {

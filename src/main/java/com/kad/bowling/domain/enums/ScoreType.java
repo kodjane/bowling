@@ -6,7 +6,8 @@ package com.kad.bowling.domain.enums;
  */
 public enum ScoreType {
     STRIKE(15, "X"),
-    SPARE(15, "/");
+    SPARE(15, "/"),
+    GUTTER(0, "-");
 
     ScoreType(int value, String symbol) {
         this.value = value;

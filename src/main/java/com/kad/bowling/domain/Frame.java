@@ -1,9 +1,11 @@
 package com.kad.bowling.domain;
 
+import com.kad.bowling.domain.enums.AttemptName;
+import com.kad.bowling.domain.enums.FrameName;
+
 import java.util.HashMap;
 
-import static com.kad.bowling.domain.enums.ScoreType.SPARE;
-import static com.kad.bowling.domain.enums.ScoreType.STRIKE;
+import static com.kad.bowling.domain.enums.AttemptName.getInitialValues;
 
 /*
  * Created By
@@ -11,87 +13,89 @@ import static com.kad.bowling.domain.enums.ScoreType.STRIKE;
  */
 public class Frame {
     private final int INITIAL_SCORE = 0;
-    private final int INITIAL_PINS_PER_GAME = 15;
+    public final static int INITIAL_PINS_PER_GAME = 15;
     private int remainingPins;
-    private final HashMap<Integer, Score> scoreBoard;
-    public Frame() {
+    private FrameName name;
+    private final HashMap<Attempt, Score> scoreBoard;
+    private int totalScore;
+
+    public Frame(FrameName name) {
+        this.name = name;
         remainingPins = INITIAL_PINS_PER_GAME;
         scoreBoard = initializeBoard();
     }
 
     /**
      * This method allows to initialize the score board
+     *
      * @return The score board
      */
-    public HashMap<Integer, Score> initializeBoard() {
-        HashMap<Integer, Score> scoreBoard = new HashMap<>();
+    public HashMap<Attempt, Score> initializeBoard() {
+        HashMap<Attempt, Score> scoreBoard = new HashMap<>();
 
-        for (int i = 1; i <= 3; i++) {
-            scoreBoard.put(i, new Score(INITIAL_SCORE));
+        for (int i = 1; i <= getInitialValues().size(); i++) {
+            scoreBoard.put(new Attempt(i, AttemptName.getById(i)), new Score(INITIAL_SCORE));
         }
 
         return scoreBoard;
     }
 
-    public HashMap<Integer, Score> getScoreBoard() {
+    public HashMap<Attempt, Score> getScoreBoard() {
         return this.scoreBoard;
     }
 
+    /**
+     * This method allows to get the remaining pins of the frame. At start up of the frame the remaining pins are 15
+     *
+     * @return The remaining pins of the frame
+     */
     public int getPins() {
         return this.remainingPins;
     }
 
     /**
      * This method Allows to get the score at a specific attempt
+     *
      * @param attempt The specific attempt
      * @return The score
      */
-    public Score getScoreAt(int attempt) {
+    public Score getScoreAt(Attempt attempt) {
         return this.scoreBoard.get(attempt);
-    }
-
-    public void knockPinsAndUpdateScoreAt(int pinsDown, Player player, int attempt) {
-        this.remainingPins = remainingPins - pinsDown;
-
-        if (isNeitherAStrikeNorASpare()) {
-            this.scoreBoard.put(attempt, new Score(pinsDown));
-        }
-
-        if (isStrike(attempt)){
-            this.scoreBoard.put(attempt, new Score(STRIKE.getValue(), STRIKE));
-            player.addAnExtraAttemptToTheLastFrame();
-        }
-
-        if (isSpare(attempt)) {
-            this.scoreBoard.put(attempt, new Score(SPARE.getValue(), SPARE));
-            player.addAnExtraAttemptToTheLastFrame();
-        }
-    }
-
-    /**
-     * This methods allows to get the total score of a frame
-     * @return The total score
-     */
-    public int getTotalScore() {
-        return this.scoreBoard.values().stream()
-                .mapToInt(Score::getValue)
-                .sum();
     }
 
     public boolean isNeitherAStrikeNorASpare() {
         return this.remainingPins > 0;
     }
 
-    public boolean isStrike(int attempt) {
-        return attempt == 1 && this.remainingPins == 0;
+    public boolean isStrike(Attempt attempt) {
+        return attempt.id() == 1 && this.remainingPins == 0;
     }
 
-    public boolean isSpare(int attempt) {
+    public boolean isSpare(Attempt attempt) {
         return isSecondOrThirdAttempt(attempt) && remainingPins == 0;
     }
 
-    private boolean isSecondOrThirdAttempt(int attempt) {
-        return attempt == 2 || attempt == 3;
+    private boolean isSecondOrThirdAttempt(Attempt attempt) {
+        return attempt.id() == 2 || attempt.id() == 3;
     }
 
+    public FrameName getName() {
+        return name;
+    }
+
+    public int getRemainingPins() {
+        return remainingPins;
+    }
+
+    public void setRemainingPins(int remainingPins) {
+        this.remainingPins = remainingPins;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(int totalScore) {
+        this.totalScore = totalScore;
+    }
 }
