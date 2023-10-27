@@ -218,7 +218,7 @@ class PlayerTest {
     @Test
     void should_sum_scores_after_all_attempts_in_a_frame_without_a_strike_or_a_spare() {
 //          scenario => ( 8|1|1 )
-//          result => 26
+//          result => 10
         // Given
         Player aPlayer = new Player();
         Frame aFrame = aPlayer.getFrame(1);
@@ -254,12 +254,13 @@ class PlayerTest {
         // Then
         assertThat(currentFrame.getTotalScore())
                 .isEqualTo(26);
+        assertThat(nextFrame.getTotalScore())
+                .isEqualTo(37);
     }
 
     @Test
     void result_of_two_successive_strikes_equals_to_the_sum_of_the_3_attempts_of_the_next_frame_plus_the_sum_all_the_previous_strike() {
 //          scenario => ( X| | | ## X| | | ## |8|2|1| )
-//          result => 41
         // Given
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
@@ -274,8 +275,10 @@ class PlayerTest {
         aPlayer.knockPinsAndUpdateScoreAt(1, secondNextFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
 
         // Then
-        assertThat(currentFrame.getTotalScore())
-                .isEqualTo(41);
+//        assertThat(currentFrame.getTotalScore())
+//                .isEqualTo(41);
+        assertThat(nextFrame.getTotalScore())
+                .isEqualTo(67);
     }
 
     @Test
@@ -305,7 +308,8 @@ class PlayerTest {
     @Test
     @Disabled
     void result_should_be_60_when_there_is_a_strike_at_a_frame_and_the_next_3_attempts_of_the_frame_are_strikes() {
-        // TODO enable this test for testing the last frame, because only the last frame allow to strike and stay in the same frame
+        // TODO in progress
+        // TODO enable this test when testing the last frame, because only the last frame allow to strike and stay in the same frame
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
         Frame nextFrame = aPlayer.getFrame(currentFrame.getName().getId() + 1);
@@ -322,7 +326,7 @@ class PlayerTest {
     @Test
     void result_of_a_spare_frame_should_be_equals_to_the_sum_of_the_next_frame_2_attempts_plus_the_result_of_the_current_frame() {
 //          scenario => ( 5|/| | ## |10|1|1| )
-//          result => 26
+//      results =>       26    |      38
 
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
@@ -334,27 +338,37 @@ class PlayerTest {
         aPlayer.knockPinsAndUpdateScoreAt(1, nextFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
         aPlayer.knockPinsAndUpdateScoreAt(1, nextFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
 
-        assertThat(currentFrame.getTotalScore())
-                .isEqualTo(26);
+//        assertThat(currentFrame.getTotalScore())
+//                .isEqualTo(26);
+        assertThat(nextFrame.getTotalScore())
+                .isEqualTo(37);
     }
 
     @Test
     void result_of_spare_frame_should_be_equal_to_the_sum_of_the_2_attempts_of_the_next_frame_2_attempts_plus_the_previous_frame() {
-//          scenario => ( |8|1|1| ## |8|/| | ## |1|2|1| )
-//          result => 28
+//      scenario => ( |8|1|1| ## |8|/| | ## |1|2|1| )
+//      results =>       10    |    28   |   31
 
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
         Frame nextFrame = aPlayer.getFrame(currentFrame.getName().getId() + 1);
+        Frame secondNextFrame = aPlayer.getFrame(nextFrame.getName().getId() + 1);
 
-        aPlayer.knockPinsAndUpdateScoreAt(5, currentFrame, new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT));
-        aPlayer.knockPinsAndUpdateScoreAt(10, currentFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
-        aPlayer.knockPinsAndUpdateScoreAt(10, nextFrame, new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT));
-        aPlayer.knockPinsAndUpdateScoreAt(1, nextFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
-        aPlayer.knockPinsAndUpdateScoreAt(1, nextFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(8, currentFrame, new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(1, currentFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(1, currentFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(8, nextFrame, new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(7, nextFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(1, secondNextFrame, new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(2, secondNextFrame, new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT));
+        aPlayer.knockPinsAndUpdateScoreAt(1, secondNextFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
 
         assertThat(currentFrame.getTotalScore())
-                .isEqualTo(26);
+                .isEqualTo(10);
+        assertThat(nextFrame.getTotalScore())
+                .isEqualTo(28);
+        assertThat(secondNextFrame.getTotalScore())
+                .isEqualTo(31);
     }
 
 }

@@ -30,27 +30,25 @@ public class BowlingGameService {
     }
 
     /**
-     * This method Allows a Player to roll a ball
-     *
+     * This method Allows a Player to roll a ball in a frame
      * @param pinsDown Number of pins down
      * @param player   The player that rolls the ball
      * @param frame    The id of the frame in which the ball is rolled
      * @param attempt  the specific attempt inside the frame
      * @return The frameId
      */
-    public Frame rollsBall(int pinsDown, Player player, Frame frame, Attempt attempt) {
+    public void rollsBall(int pinsDown, Player player, Frame frame, Attempt attempt) {
 
         if (pinsDown < 0 || pinsDown > INITIAL_PINS_PER_GAME )
             throw new RollingBallException("The number of pins should be between 0 and 15");
         // TODO in progress
         updateFrame(pinsDown, player, frame, attempt);
 
-        return frame;
     }
 
     /**
      * This methods allows to verify that the game has the minimum amount of players before starting
-     * @param players The list of the players that participate to the game
+     * @param players The list of the players that participate in the game
      * @return true is the condition is satisfied
      */
     private boolean hasMinimumTwoPlayers(List<Player> players) {

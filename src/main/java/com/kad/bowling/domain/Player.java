@@ -1,5 +1,6 @@
 package com.kad.bowling.domain;
 
+import com.kad.bowling.domain.enums.AttemptName;
 import com.kad.bowling.domain.enums.FrameName;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static com.kad.bowling.domain.enums.ScoreType.STRIKE;
 public class Player {
     private final List<Frame> frames;
     private final int INITIAL_FRAME_NUMBER = 5;
-    private final List<Frame> previousFrames = new ArrayList<>();
+    private final List<Frame> processedFrames = new ArrayList<>();
 
     public Player() {
         this.frames = initializeFrames();
@@ -57,36 +58,57 @@ public class Player {
     public void calculateTotalScore(int pinsDown, Frame currentFrame, Attempt attempt) {
         currentFrame.setRemainingPins(currentFrame.getRemainingPins() - pinsDown);
         currentFrame.getScoreBoard().put(attempt, new Score(pinsDown));
+        Frame previousFrame = this.getPreviousFrame(currentFrame);
         if (isFirstAttempt(attempt)) {
-            if (this.getPreviousFrame(currentFrame) != null)
-                previousFrames.add(this.getPreviousFrame(currentFrame));
+            if (previousFrame != null)
+                processedFrames.add(previousFrame);
         }
         Frame nextFrame = this.getNextFrame(currentFrame);
 
 
         if (currentFrame.isNeitherAStrikeNorASpare()) {
             currentFrame.getScoreBoard().put(attempt, new Score(pinsDown));
-            if (0 == previousFrames.size()) {
+            if (0 == processedFrames.size()) {
                 currentFrame.setTotalScore(getTotalSumAttempt(currentFrame));
             } else {
                 if (isThirdAttempt(attempt)) {
                     int previousFramesScore = 0;
-                    for (Frame previousFrame : previousFrames) {
-//                        if (SPARE.getSymbol().equals(previousFrame.getScoreAt(new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT)).getType().getSymbol())
-//                        || SPARE.getSymbol().equals(previousFrame.getScoreAt(new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT)).getType().getSymbol())) {
-//                            break;
-//                        }
+                    for (Frame processedFrame : processedFrames) {
 
-                        if (previousFrame.isStrike(new Attempt(FIRST_ATTEMPT.getId(), FIRST_ATTEMPT))) {
-                            previousFramesScore += STRIKE.getValue();
-                            Frame lastPreviousFrame = previousFrames.get(0);
-                            lastPreviousFrame.setTotalScore(getTotalSumAttempt(currentFrame) + previousFramesScore);
+                        if (processedFrame.isStrike(getAttempt(FIRST_ATTEMPT))) {
+                            if (1 == processedFrames.size()) {
+                                processedFrame.setTotalScore(processedFrame.getScoreAt(getAttempt(FIRST_ATTEMPT)).getValue() + getTotalSumAttempt(currentFrame));
+                                currentFrame.setTotalScore(processedFrame.getTotalScore() + getTotalSumAttempt(currentFrame));
+                            } else {
+                                previousFramesScore += STRIKE.getValue();
+                                Frame firstProcessedFrame = this.processedFrames.get(0);
+                                firstProcessedFrame.setTotalScore(getTotalSumAttempt(currentFrame) + previousFramesScore);
+                            }
+
+                        } else if (processedFrame.isSpare(new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT))) {
+                            Frame firstProcessedFrame = getPreviousFrame(processedFrame);
+                            int firstProcessedScore = firstProcessedFrame != null ? getTotalSumAttempt(firstProcessedFrame) : 0;
+                            int totalScore = getTotalSumAttempt(processedFrame) +
+                                    firstProcessedScore +
+                                    getTotalSumAttemptForSpareFrame(currentFrame);
+                            processedFrame.setTotalScore(totalScore);
+                            if (previousFrame != null)
+                                currentFrame.setTotalScore(previousFrame.getTotalScore() + getTotalSumAttemptForSpareFrame(currentFrame));
+                        } else if (processedFrame.isSpare(new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT))) {
+                            Frame lastProcessedFrame = getNextFrame(this.getFrame(processedFrames.size()));
+                            processedFrame.setTotalScore(getTotalSumAttemptForSpareFrame(currentFrame)
+                                    + getTotalSumAttempt(processedFrame)
+                                    + getTotalSumAttempt(lastProcessedFrame));
+                            if (previousFrame != null)
+                                currentFrame.setTotalScore(previousFrame.getTotalScore() + getTotalSumAttemptForSpareFrame(currentFrame));
                         } else {
-                            previousFrame.setTotalScore(getTotalSumAttemptForSpareFrame(currentFrame) + getTotalSumAttempt(previousFrame));
+                            if (processedFrame.getTotalScore() == 0)
+                                processedFrame.setTotalScore(getTotalSumAttemptForSpareFrame(currentFrame) + getTotalSumAttempt(processedFrame));
                         }
                     }
+//                    currentFrame.setTotalScore(previousFrame.getTotalScore() + getTotalSumAttempt(currentFrame));
                 }
-                currentFrame.getScoreBoard().put(attempt, new Score(pinsDown));
+//                currentFrame.getScoreBoard().put(attempt, new Score(pinsDown));
             }
         }
 
@@ -100,6 +122,10 @@ public class Player {
         if (currentFrame.isSpare(attempt)) {
             currentFrame.getScoreBoard().put(attempt, new Score(pinsDown, SPARE));
         }
+    }
+
+    private Attempt getAttempt(AttemptName attemptName) {
+        return new Attempt(attemptName.getId(), attemptName);
     }
 
     private boolean isThirdAttempt(Attempt attempt) {
@@ -117,10 +143,8 @@ public class Player {
     }
 
     public int getTotalSumAttemptForSpareFrame(Frame currentFrame) {
-        return currentFrame.getScoreBoard().values().stream()
-                .limit(2)
-                .mapToInt(Score::getValue)
-                .sum();
+        return currentFrame.getScoreBoard().get(getAttempt(FIRST_ATTEMPT)).getValue() +
+                currentFrame.getScoreBoard().get(new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT)).getValue();
     }
 
     public Frame getlastFrame() {
