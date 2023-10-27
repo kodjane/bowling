@@ -261,6 +261,7 @@ class PlayerTest {
     @Test
     void result_of_two_successive_strikes_equals_to_the_sum_of_the_3_attempts_of_the_next_frame_plus_the_sum_all_the_previous_strike() {
 //          scenario => ( X| | | ## X| | | ## |8|2|1| )
+//          result => 41
         // Given
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
@@ -275,10 +276,8 @@ class PlayerTest {
         aPlayer.knockPinsAndUpdateScoreAt(1, secondNextFrame, new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT));
 
         // Then
-//        assertThat(currentFrame.getTotalScore())
-//                .isEqualTo(41);
-        assertThat(nextFrame.getTotalScore())
-                .isEqualTo(67);
+        assertThat(currentFrame.getTotalScore())
+                .isEqualTo(41);
     }
 
     @Test

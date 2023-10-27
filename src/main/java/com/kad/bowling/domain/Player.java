@@ -75,9 +75,9 @@ public class Player {
                     int previousFramesScore = 0;
                     for (Frame processedFrame : processedFrames) {
 
-                        if (processedFrame.isStrike(getAttempt(FIRST_ATTEMPT))) {
+                        if (processedFrame.isStrike(createAttempt(FIRST_ATTEMPT))) {
                             if (1 == processedFrames.size()) {
-                                processedFrame.setTotalScore(processedFrame.getScoreAt(getAttempt(FIRST_ATTEMPT)).getValue() + getTotalSumAttempt(currentFrame));
+                                processedFrame.setTotalScore(processedFrame.getScoreAt(createAttempt(FIRST_ATTEMPT)).getValue() + getTotalSumAttempt(currentFrame));
                                 currentFrame.setTotalScore(processedFrame.getTotalScore() + getTotalSumAttempt(currentFrame));
                             } else {
                                 previousFramesScore += STRIKE.getValue();
@@ -85,7 +85,7 @@ public class Player {
                                 firstProcessedFrame.setTotalScore(getTotalSumAttempt(currentFrame) + previousFramesScore);
                             }
 
-                        } else if (processedFrame.isSpare(new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT))) {
+                        } else if (processedFrame.isSpare(createAttempt(SECOND_ATTEMPT))) {
                             Frame firstProcessedFrame = getPreviousFrame(processedFrame);
                             int firstProcessedScore = firstProcessedFrame != null ? getTotalSumAttempt(firstProcessedFrame) : 0;
                             int totalScore = getTotalSumAttempt(processedFrame) +
@@ -94,7 +94,7 @@ public class Player {
                             processedFrame.setTotalScore(totalScore);
                             if (previousFrame != null)
                                 currentFrame.setTotalScore(previousFrame.getTotalScore() + getTotalSumAttemptForSpareFrame(currentFrame));
-                        } else if (processedFrame.isSpare(new Attempt(THIRD_ATTEMPT.getId(), THIRD_ATTEMPT))) {
+                        } else if (processedFrame.isSpare(createAttempt(THIRD_ATTEMPT))) {
                             Frame lastProcessedFrame = getNextFrame(this.getFrame(processedFrames.size()));
                             processedFrame.setTotalScore(getTotalSumAttemptForSpareFrame(currentFrame)
                                     + getTotalSumAttempt(processedFrame)
@@ -106,17 +106,12 @@ public class Player {
                                 processedFrame.setTotalScore(getTotalSumAttemptForSpareFrame(currentFrame) + getTotalSumAttempt(processedFrame));
                         }
                     }
-//                    currentFrame.setTotalScore(previousFrame.getTotalScore() + getTotalSumAttempt(currentFrame));
                 }
-//                currentFrame.getScoreBoard().put(attempt, new Score(pinsDown));
             }
         }
 
         if (currentFrame.isStrike(attempt)) {
             currentFrame.getScoreBoard().put(attempt, new Score(STRIKE.getValue(), STRIKE));
-//            if (previousFrame == null) {
-//                currentFrame.setTotalScore(getTotalSumAttempt(nextFrame) + currentFrame.getScoreAt(attempt).getValue());
-//            }
         }
 
         if (currentFrame.isSpare(attempt)) {
@@ -124,7 +119,7 @@ public class Player {
         }
     }
 
-    private Attempt getAttempt(AttemptName attemptName) {
+    private Attempt createAttempt(AttemptName attemptName) {
         return new Attempt(attemptName.getId(), attemptName);
     }
 
@@ -143,8 +138,8 @@ public class Player {
     }
 
     public int getTotalSumAttemptForSpareFrame(Frame currentFrame) {
-        return currentFrame.getScoreBoard().get(getAttempt(FIRST_ATTEMPT)).getValue() +
-                currentFrame.getScoreBoard().get(new Attempt(SECOND_ATTEMPT.getId(), SECOND_ATTEMPT)).getValue();
+        return currentFrame.getScoreBoard().get(createAttempt(FIRST_ATTEMPT)).getValue() +
+                currentFrame.getScoreBoard().get(createAttempt(SECOND_ATTEMPT)).getValue();
     }
 
     public Frame getlastFrame() {

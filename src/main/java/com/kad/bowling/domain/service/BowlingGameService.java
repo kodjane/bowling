@@ -35,13 +35,11 @@ public class BowlingGameService {
      * @param player   The player that rolls the ball
      * @param frame    The id of the frame in which the ball is rolled
      * @param attempt  the specific attempt inside the frame
-     * @return The frameId
      */
     public void rollsBall(int pinsDown, Player player, Frame frame, Attempt attempt) {
-
         if (pinsDown < 0 || pinsDown > INITIAL_PINS_PER_GAME )
             throw new RollingBallException("The number of pins should be between 0 and 15");
-        // TODO in progress
+
         updateFrame(pinsDown, player, frame, attempt);
 
     }
