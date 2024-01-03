@@ -308,7 +308,7 @@ class PlayerTest {
     @Disabled
     void result_should_be_60_when_there_is_a_strike_at_a_frame_and_the_next_3_attempts_of_the_frame_are_strikes() {
         // TODO in progress
-        // TODO enable this test when testing the last frame, because only the last frame allow to strike and stay in the same frame
+        // TODO enable this test when testing the last frame, because only the last frame allows to strike and stay in the same frame
         Player aPlayer = new Player();
         Frame currentFrame = aPlayer.getFrame(FIRST_FRAME.getId());
         Frame nextFrame = aPlayer.getFrame(currentFrame.getName().getId() + 1);
